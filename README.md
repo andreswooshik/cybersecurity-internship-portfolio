@@ -1,51 +1,53 @@
-# Cybersecurity Internship Portfolio
+# Ralf Andre Ebuña (Editable Portfolio Name)
 
-Welcome to my cybersecurity internship portfolio. This repository documents hands-on training in network security, packet analysis, digital forensics, incident response, and secure communications.
+## Cybersecurity Internship Portfolio | Network Security • Digital Forensics • Incident Response
 
-> **Lab disclaimer:** The credentials, tokens, flags, hostnames, and file contents documented here are from authorized educational lab environments. They are included for learning and portfolio demonstration only.
+I am an aspiring cybersecurity professional building practical, internship-ready experience through hands-on, authorized lab investigations. This portfolio highlights my work in network traffic analysis, incident documentation, and security-focused reporting.
 
-## Portfolio Contents
+> **Name note:** The profile name above is based on uploaded certificate filenames and is editable if your preferred professional spelling differs.
 
-### Featured Projects
+## Internship-Focused Interests
 
-1. [Network Sniffing Analysis & Incident Report](projects/network-sniffing-analysis.md)  
-   A consolidated incident report covering exposed HTTP/FTP credentials, session tokens, reconstructed files, hidden HTML metadata, and remediation recommendations.
+- Network security
+- Digital forensics
+- Incident response
+- Cloud security
+- Secure communications
 
-2. [Network Forensics & CTF Lab Writeups](projects/network-forensics-lab-writeups.md)  
-   Step-by-step writeups covering cleartext credential sniffing, HTTP object extraction, TLS certificate analysis, FTP data exfiltration, session-token recovery, metadata discovery, and Base64 decoding.
+## Technical Skills & Tools
 
-### Certificates
+- **Network Analysis:** Wireshark workflows, packet capture review, protocol inspection (HTTP, HTTPS/TLS, FTP, TCP)
+- **Forensics & Investigation:** artifact reconstruction, metadata review, evidence documentation, timeline-based analysis
+- **Security Operations:** credential exposure analysis, session handling risk analysis, remediation planning
+- **Reporting:** incident summaries, findings-to-impact mapping, recruiter-friendly technical writeups
+- **Platforms & Utilities:** Markdown documentation, Git/GitHub portfolio versioning
 
-- [Certificate index and file links](certificates/README.md)
+## Featured Projects
 
-Current uploaded certificates and badges include:
+### 1) [Network Sniffing Analysis & Incident Report](projects/network-sniffing-analysis.md)
 
-- Fortinet NSE 1 Certified in Cybersecurity
-- Fortinet NSE 2 Certified in Cybersecurity
-- BlackStride Cybersecurity Foundations Certificate of Achievement
-- BlackStride Certificate of Attendance: Introduction to Microsoft Entra
-- BlackStride Certificate of Attendance: Intro to Cloud Security, Compliance and Identity
-- DEVCON Cebu CyberSeries: Beyond the Firewall (Certificate of Participation)
-- BlackStride Cyber Bronze Badge: 3rd Place Beginner CTF Challenge
+- **Outcome:** Produced a structured incident report showing how plaintext protocols expose authentication and sensitive data.
+- **Tools/Methods:** packet inspection, HTTP/FTP stream review, object reconstruction, remediation planning.
 
-## Skills Demonstrated
+### 2) [Network Forensics & CTF Lab Writeups](projects/network-forensics-lab-writeups.md)
 
-- Packet capture analysis with Wireshark-style workflows
-- HTTP, HTTPS/TLS, FTP, and TCP traffic inspection
-- Cleartext credential identification
-- Session-token and metadata analysis
-- HTTP object export and file reconstruction
-- FTP data-stream carving
-- Base64 decoding
-- Digital-forensics documentation
-- Incident reporting and security-impact assessment
-- Security remediation planning
+- **Outcome:** Documented multi-scenario lab investigations with clear findings, impact, and defensive recommendations.
+- **Tools/Methods:** protocol-focused filtering, payload extraction, metadata analysis, encoded-data decoding.
+
+## Certifications
+
+- [Certificate Index](certificates/README.md)
+
+## Responsible Use & Lab Disclaimer
+
+All project artifacts in this repository are from simulated or authorized educational lab environments. Any sensitive-looking values are redacted placeholders and must not be treated as real credentials, production secrets, or live system data.
 
 ## Repository Structure
 
 ```text
 .
 ├── README.md
+├── PORTFOLIO_GUIDE.md
 ├── certificates/
 │   ├── README.md
 │   ├── blackstride-bronze-badge-3rd-place-beginner-ctf-challenge.png
@@ -62,7 +64,7 @@ Current uploaded certificates and badges include:
 
 ## Contact
 
-- **Name:** [Your Name]
-- **Email:** [Your Email]
-- **LinkedIn:** [Your LinkedIn URL]
-- **GitHub:** [Your GitHub URL]
+- **Email:** [your.email@example.com]
+- **LinkedIn:** [https://www.linkedin.com/in/your-profile]
+- **Location:** [City, Country]
+- **Resume:** [Link to resume file or profile]
