@@ -1,10 +1,10 @@
-# Ralf Andre Ebuña (Editable Portfolio Name)
+# Ralf Andre Ebuña 
 
 ## Cybersecurity Internship Portfolio | Network Security • Digital Forensics • Incident Response
 
 I am an aspiring cybersecurity professional building practical, internship-ready experience through hands-on, authorized lab investigations. This portfolio highlights my work in network traffic analysis, incident documentation, and security-focused reporting.
 
-> **Name note:** The profile name above is based on uploaded certificate filenames and is editable if your preferred professional spelling differs.
+
 
 ## Internship-Focused Interests
 
