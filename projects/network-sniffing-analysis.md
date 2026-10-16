@@ -5,6 +5,8 @@
 **Status:** Complete  
 
 > **Portfolio note:** This report is based on an authorized educational lab environment. The credentials, tokens, flags, and file contents below are lab-generated values.
+>
+> **Public-safety note:** Credential-like and token-like values are partially redacted or explicitly marked as lab artifacts to avoid confusion with real secrets.
 
 ---
 
@@ -12,32 +14,54 @@
 
 This report documents the analysis of raw packet captures (`.pcap`) containing unencrypted network communications across HTTP and FTP protocols. By inspecting cleartext session traffic, credentials, session tokens, hidden HTML metadata, and exfiltrated file contents were successfully recovered. This exercise demonstrates the critical risk of transmitting sensitive authentication data over unencrypted channels.
 
+## 2. At-a-Glance
+
+### What I did
+- Investigated multiple lab packet captures to identify exposed authentication data and hidden application metadata.
+- Reconstructed transferred files from FTP and reviewed HTTP response content for embedded artifacts.
+- Consolidated evidence into a single incident-style report with practical security actions.
+
+### Tools
+- Wireshark-style packet inspection workflows
+- Protocol filtering and stream reconstruction (HTTP, FTP, TLS metadata)
+- Base64 decoding for encoded lab artifacts
+
+### Findings
+- Plaintext HTTP/FTP traffic exposed usernames, password fields, session values, and transferred content.
+- Client-visible metadata (such as HTML comments) revealed lab session/flag markers.
+- Metadata remains partially observable even when sessions use encrypted protocols.
+
+### Recommendations
+- Enforce HTTPS and remove plaintext FTP.
+- Rotate credentials/session identifiers and improve authentication monitoring.
+- Remove sensitive comments/metadata from client-delivered responses.
+
 ---
 
-## 2. Captured Credentials & Session Data
+## 3. Captured Credentials & Session Data
 
 ### Web Authentication (HTTP)
 
 - **Target Server:** `webserver.local` / `portal.local`
 - **Endpoint `/login`:** `username=student1` | `password=P@ssw0rd123`
-- **Endpoint `/auth`:** `id=student1` | `sess=BSC-LPD8W`
-- **Endpoint `/session`:** `uid=student1` | `token=TEMP1`
+- **Endpoint `/auth`:** `id=student1` | `sess=[LAB_SESSION_ID_REDACTED]`
+- **Endpoint `/session`:** `uid=student1` | `token=[LAB_TOKEN_REDACTED]`
 
 ### File Transfer Protocol (FTP)
 
 - **Target Server:** BlackStride FTP Service / Local FTP
-- **Successful Login (`exam_D_incident_ctf.pcap`):** `USER student` | `PASS Spring!2026` — Status: `230 Login successful`
-- **Successful Login (`cyberlab_incident.pcap`):** `USER backup` | `PASS backup123` — Status: `230 User backup logged in`
+- **Successful Login (`exam_D_incident_ctf.pcap`):** `USER student` | `PASS [LAB_PASSWORD_REDACTED]` — Status: `230 Login successful`
+- **Successful Login (`cyberlab_incident.pcap`):** `USER backup` | `PASS [LAB_PASSWORD_REDACTED]` — Status: `230 User backup logged in`
 
 #### Failed Authentication Attempts
 
-- `USER audit` | `PASS Backup2025` — `530 Login incorrect`
-- `USER admin` | `PASS Admin123` / `PASS tryme` — `530 Login incorrect`
-- `USER backup` | `PASS Password1` — `530 Login incorrect`
+- `USER audit` | `PASS [LAB_PASSWORD_REDACTED]` — `530 Login incorrect`
+- `USER admin` | `PASS [LAB_PASSWORD_REDACTED]` / `PASS [LAB_PASSWORD_REDACTED]` — `530 Login incorrect`
+- `USER backup` | `PASS [LAB_PASSWORD_REDACTED]` — `530 Login incorrect`
 
 ---
 
-## 3. Extracted Files & Secret Content
+## 4. Extracted Files & Secret Content
 
 ### Reconstructed CSV File (`report.csv`)
 
@@ -47,7 +71,7 @@ Interception of the FTP `STOR report.csv` stream yielded the following record pa
 id,name,amount
 1,alpha,100
 2,beta,200
-3,gamma,BSC-HQZ08
+3,gamma,[LAB_FLAG_VALUE]
 ```
 
 ### Reconstructed Text File (`secret_exfil.txt`)
@@ -55,30 +79,30 @@ id,name,amount
 Interception of FTP exfiltration traffic revealed the plaintext secret payload:
 
 ```text
-SECRET_DATA: The project's passwords are 12345
+SECRET_DATA: [LAB_CONTENT_REDACTED]
 ```
 
 ### Web Source Metadata & Hidden HTML Comments
 
-- **Dashboard Page (`exam_B_http_objects_ctf.pcap`):** Header contained session ID comment: `<!-- sid:BSC-5A0JQ -->`
-- **Weekly Backup Report (`exam_D_incident_ctf.pcap`):** Body contained encoded flag comment: `<!-- FLAG:QlNDLTlLUTJB                          -->`
-- **HTTPS Metadata Capture (`exam_C_https_meta_ctf.pcap`):** Extracted secure exam token: `BSC-Z0F15`
+- **Dashboard Page (`exam_B_http_objects_ctf.pcap`):** Header contained lab session marker comment: `<!-- sid:[LAB_FLAG_VALUE] -->`
+- **Weekly Backup Report (`exam_D_incident_ctf.pcap`):** Body contained encoded lab marker comment: `<!-- FLAG:[LAB_BASE64_VALUE] -->`
+- **HTTPS Metadata Capture (`exam_C_https_meta_ctf.pcap`):** Extracted lab token marker: `[LAB_FLAG_VALUE]`
 
 ---
 
-## 4. Master Flag Inventory
+## 5. Master Flag Inventory
 
 | Flag / Token ID | Protocol / Source | Details / Encoding |
 | :--- | :--- | :--- |
-| `BSC-LPD8W` | HTTP (`/auth`) | Session parameter |
-| `BSC-HQZ08` | FTP (`report.csv`) | Exfiltrated CSV record |
-| `BSC-5A0JQ` | HTTP (HTML Header) | Client session ID (`sid`) |
-| `BSC-Z0F15` | HTTPS Metadata | Exam session identifier |
-| `QlNDLTlLUTJB` | HTTP (HTML Comment) | Base64 encoded flag (`BSC-9KQ2A` decoded) |
+| `[LAB_SESSION_MARKER]` | HTTP (`/auth`) | Session parameter |
+| `[LAB_FLAG_VALUE]` | FTP (`report.csv`) | Exfiltrated CSV record |
+| `[LAB_FLAG_VALUE]` | HTTP (HTML Header) | Client session marker (`sid`) |
+| `[LAB_FLAG_VALUE]` | HTTPS Metadata | Exam session identifier |
+| `[LAB_BASE64_VALUE]` | HTTP (HTML Comment) | Base64-encoded lab flag value |
 
 ---
 
-## 5. Security Recommendations
+## 6. Security Recommendations
 
 1. **Mandate Encrypted Web Communications:** Force all web endpoints to use HTTPS, preferably with modern TLS configurations, to prevent eavesdropping on user credentials and session tokens.
 2. **Deprecate Plaintext FTP:** Upgrade file transfer operations from legacy FTP to SFTP or FTPS to secure authentication and file transfer streams.

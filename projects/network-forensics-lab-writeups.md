@@ -5,6 +5,8 @@
 **Status:** Complete  
 
 > **Lab disclaimer:** This document describes authorized educational exercises. The credentials, tokens, flags, hostnames, and file contents are simulated lab artifacts and should not be reused outside the lab.
+>
+> **Public-safety note:** Credential-like and token-like values are partially redacted or generalized to prevent confusion with real secrets.
 
 ## Contents
 
@@ -17,6 +19,30 @@
 7. [Encrypted Session Metadata Leakage](#7-ctf-walkthrough-encrypted-session-metadata-leakage)
 8. [Multi-Protocol Forensics and Base64 Decoding](#8-incident-walkthrough-multi-protocol-forensics--base64-decoding)
 9. [Summary of Artifacts and Flags](#summary-table-of-artifacts--flags)
+
+---
+
+## At-a-Glance
+
+### What I did
+- Performed protocol-focused packet analysis across HTTP, FTP, and TLS lab captures.
+- Reconstructed transferred files and parsed client-visible metadata for evidence.
+- Correlated artifacts across multiple scenarios to produce incident-style findings.
+
+### Tools
+- Wireshark-style capture filtering and stream inspection
+- HTTP object export and payload reconstruction
+- Base64 decoding and certificate/metadata review
+
+### Findings
+- Plaintext protocols exposed authentication data and transferred content.
+- Hidden comments and metadata in responses leaked lab session/flag markers.
+- Encrypted channels reduced payload visibility but still exposed negotiation metadata.
+
+### Recommendations
+- Migrate all authenticated traffic to encrypted protocols.
+- Remove sensitive metadata from client-delivered source.
+- Improve authentication monitoring and credential hygiene.
 
 ---
 
@@ -119,15 +145,15 @@ Investigate unauthorized access attempts against an internal FTP server and reco
 1. **Service banner identification:** The service returned `220 Welcome to BlackStride FTP Service`.
 2. **Authentication analysis:**
 
-   - `USER admin` | `PASS wrongpass` → `530 Login incorrect.`
-   - `USER admin` | `PASS tryme` → `530 Login incorrect.`
-   - `USER backup` | `PASS backup123` → `230 User backup logged in.`
+   - `USER admin` | `PASS [LAB_PASSWORD_REDACTED]` → `530 Login incorrect.`
+   - `USER admin` | `PASS [LAB_PASSWORD_REDACTED]` → `530 Login incorrect.`
+   - `USER backup` | `PASS [LAB_PASSWORD_REDACTED]` → `230 User backup logged in.`
 
 3. **Data-stream tracking:** After login, user `backup` enabled binary transfer mode with `TYPE I` and issued `STOR secret_exfil.txt`.
 4. **Data reconstruction:** The data-channel stream contained:
 
 ```text
-SECRET_DATA: The project's passwords are 12345
+SECRET_DATA: [LAB_CONTENT_REDACTED]
 ```
 
 **Security impact:** FTP exposes both authentication credentials and file contents in plaintext.
@@ -148,10 +174,10 @@ Locate session tokens embedded within cleartext web authentication POST requests
 1. Filtered for HTTP `POST` requests sent to `portal.local`.
 2. Recovered the following session parameters:
 
-   - `/session`: `uid=student1&token=TEMP1&remember=1`
-   - `/auth`: `id=student1&sess=BSC-LPD8W&mode=1`
+   - `/session`: `uid=student1&token=[LAB_TOKEN_REDACTED]&remember=1`
+   - `/auth`: `id=student1&sess=[LAB_SESSION_ID_REDACTED]&mode=1`
 
-3. **Flag identified:** `BSC-LPD8W`
+3. **Flag identified:** `[LAB_FLAG_VALUE]`
 
 ---
 
@@ -170,10 +196,10 @@ Carve HTTP response payloads from `site.local` to uncover hidden developer comme
 2. Inspected the dashboard HTML response:
 
 ```html
-<html><head><!-- sid:BSC-5A0JQ --></head><body>Dashboard</body></html>
+<html><head><!-- sid:[LAB_FLAG_VALUE] --></head><body>Dashboard</body></html>
 ```
 
-3. **Flag identified:** `BSC-5A0JQ`
+3. **Flag identified:** `[LAB_FLAG_VALUE]`
 
 **Security impact:** HTML comments are client-visible and should never contain secrets, session identifiers, or internal security metadata.
 
@@ -191,8 +217,8 @@ Extract unencrypted hostname and metadata strings observable during SSL/TLS setu
 ### Methodology and Findings
 
 1. Examined metadata fields transmitted during encrypted-session negotiation.
-2. Identified the string `BSC-Z0F15 secure-exam net`.
-3. **Flag identified:** `BSC-Z0F15`
+2. Identified a lab marker string in TLS metadata: `[LAB_FLAG_VALUE] secure-exam net`.
+3. **Flag identified:** `[LAB_FLAG_VALUE]`
 
 **Security note:** Encryption protects application content but does not necessarily conceal all connection metadata.
 
@@ -211,9 +237,9 @@ Analyze FTP uploads and HTTP backup reports to recover hidden flags across multi
 
 1. **Credential audit:**
 
-   - `USER audit` | `PASS Backup2025` → `530 Login incorrect`
-   - `USER backup` | `PASS Password1` → `530 Login incorrect`
-   - `USER student` | `PASS Spring!2026` → `230 Login successful`
+   - `USER audit` | `PASS [LAB_PASSWORD_REDACTED]` → `530 Login incorrect`
+   - `USER backup` | `PASS [LAB_PASSWORD_REDACTED]` → `530 Login incorrect`
+   - `USER student` | `PASS [LAB_PASSWORD_REDACTED]` → `230 Login successful`
 
 2. **File-stream carving:** Recovered the payload from `STOR report.csv`:
 
@@ -221,10 +247,10 @@ Analyze FTP uploads and HTTP backup reports to recover hidden flags across multi
 id,name,amount
 1,alpha,100
 2,beta,200
-3,gamma,BSC-HQZ08
+3,gamma,[LAB_FLAG_VALUE]
 ```
 
-3. **CSV flag identified:** `BSC-HQZ08`
+3. **CSV flag identified:** `[LAB_FLAG_VALUE]`
 
 ### Part 2: HTTP HTML Comment Analysis
 
@@ -237,17 +263,17 @@ id,name,amount
 <body>
 <h1>Weekly Backup Report</h1>
 <p>Status: OK</p>
-<!-- FLAG:QlNDLTlLUTJB                          -->
+<!-- FLAG:[LAB_BASE64_VALUE] -->
 </body>
 </html>
 ```
 
 2. Decoded the Base64 value:
 
-   - Encoded payload: `QlNDLTlLUTJB`
-   - Decoded value: `BSC-9KQ2A`
+   - Encoded payload: `[LAB_BASE64_VALUE]`
+   - Decoded value: `[LAB_FLAG_VALUE]`
 
-3. **HTML flag identified:** `BSC-9KQ2A`
+3. **HTML flag identified:** `[LAB_FLAG_VALUE]`
 
 ---
 
@@ -255,14 +281,14 @@ id,name,amount
 
 | PCAP File | Protocol | Key Evidence / Credential | Recovered Flag / Token |
 | :--- | :--- | :--- | :--- |
-| `cyberlab_1-cleartext-password.pcap` | HTTP | `student1` : `P@ssw0rd123` | N/A |
+| `cyberlab_1-cleartext-password.pcap` | HTTP | `student1` : `[LAB_PASSWORD_REDACTED]` | N/A |
 | `cyberlab_2-HTML-export.pcap` | HTTP | `blackstride_day2.html` export | N/A |
 | `cyberlab_3_https.pcap` | TLS | PEM certificate (`MIIFakeCert`) | N/A |
-| `cyberlab_incident.pcap` | FTP | `backup` : `backup123` | `SECRET_DATA` payload |
-| `exam_A_cleartext_ctf.pcap` | HTTP | POST `/auth` parameter | `BSC-LPD8W` |
-| `exam_B_http_objects_ctf.pcap` | HTTP | HTML `<head>` SID comment | `BSC-5A0JQ` |
-| `exam_C_https_meta_ctf.pcap` | TLS metadata | Domain metadata leak | `BSC-Z0F15` |
-| `exam_D_incident_ctf.pcap` | FTP / HTTP | `student` : `Spring!2026` and Base64 comment | `BSC-HQZ08` and `BSC-9KQ2A` |
+| `cyberlab_incident.pcap` | FTP | `backup` : `[LAB_PASSWORD_REDACTED]` | `SECRET_DATA` payload |
+| `exam_A_cleartext_ctf.pcap` | HTTP | POST `/auth` parameter | `[LAB_FLAG_VALUE]` |
+| `exam_B_http_objects_ctf.pcap` | HTTP | HTML `<head>` SID comment | `[LAB_FLAG_VALUE]` |
+| `exam_C_https_meta_ctf.pcap` | TLS metadata | Domain metadata leak | `[LAB_FLAG_VALUE]` |
+| `exam_D_incident_ctf.pcap` | FTP / HTTP | `student` : `[LAB_PASSWORD_REDACTED]` and Base64 comment | `[LAB_FLAG_VALUE]` |
 
 ## Lessons Learned
 
