@@ -16,9 +16,17 @@ Welcome to my cybersecurity internship portfolio. This repository documents hand
 
 ### Certificates
 
-Certificates will be added here.
+- [Certificate index and file links](certificates/README.md)
 
-- [Certificate files and supporting documents](certificates/README.md)
+Current uploaded certificates and badges include:
+
+- Fortinet NSE 1 Certified in Cybersecurity
+- Fortinet NSE 2 Certified in Cybersecurity
+- BlackStride Cybersecurity Foundations Certificate of Achievement
+- BlackStride Certificate of Attendance: Introduction to Microsoft Entra
+- BlackStride Certificate of Attendance: Intro to Cloud Security, Compliance and Identity
+- DEVCON Cebu CyberSeries: Beyond the Firewall (Certificate of Participation)
+- BlackStride Cyber Bronze Badge: 3rd Place Beginner CTF Challenge
 
 ## Skills Demonstrated
 
@@ -39,7 +47,14 @@ Certificates will be added here.
 .
 ├── README.md
 ├── certificates/
-│   └── README.md
+│   ├── README.md
+│   ├── blackstride-bronze-badge-3rd-place-beginner-ctf-challenge.png
+│   ├── blackstride-cybersecurity-foundations-certificate-f6ae69a5-cdb3-4c93-aaf7-a4cb6b755e9d.pdf
+│   ├── blackstride-intro-to-cloud-security-compliance-identity-certificate-285d6924-992a-40f1-aef6-3d6f712953f1.pdf
+│   ├── blackstride-introduction-to-microsoft-entra-certificate-26577aef-66e3-4811-a98f-bfc61ba7f870.pdf
+│   ├── devcon-cebu-cyberseries-beyond-the-firewall-certificate.jpg
+│   ├── fortinet-nse-1-certified-in-cybersecurity-ralf-andre-ebuna.pdf
+│   └── fortinet-nse-2-certified-in-cybersecurity-ralf-andre-ebuna.pdf
 └── projects/
     ├── network-forensics-lab-writeups.md
     └── network-sniffing-analysis.md
